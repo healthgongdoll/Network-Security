@@ -142,3 +142,130 @@ Insider Threats - Discontent
 3. Gian Access - Vulnerability access and implement malware 
 4. Maintaining Access - Malware 
 5. Clearing Tracks - Clear and go out 
+
+## ARP Protocol
+
+## Why Address Translation 
+
+We need both physical (MAC) address and logical(IP) address for packet delivery
+
+- IP addresses are needed for packet routing 
+- MAC addresses are needed for packet delivery within the LAN 
+
+## When is Address Translation Happens?
+
+Anytime a host or a router has an IP packet to send, it must be able to encapsulate the packet in the corresponding data-link layer frame
+
+- IP sender knows the address of IP receiver but also needs to know MAC address of next hop receiver 
+
+![image](https://user-images.githubusercontent.com/79100627/198148623-adb235b5-76e6-4bec-8fd4-30ce4bc55fcb.png)
+
+## How is Address Translation Performed?
+
+- There are two main approaches that facilitate IP <-> MAC address translation
+
+1. Static Mapping
+2. Dynamic Mapping 
+
+## Static Address Translation 
+
+- Create a table that associates a logical address with a physical address and store in each machine 
+
+Issue: 
+
+1. For every new device added to the LAN Network, the tables would have to be manually updated (For every computer)
+2. Gateway could change its NIC resulting in a new physical address
+3. Mobile station can move from one LAN network to another, resulting in a change in its logical address
+
+## Dynamic Address Translation
+
+Use a protocol to find another address. Keep the obtained results in a table 
+
+## Address Resolution Protocol 
+
+Accpets a logical address from IP layer (protocol) and maps the address to the corresponding physical address
+
+- Supports its main function through 2 key operations:
+
+1. Maintenance of a cache/table of ARP mappings
+2. Exchange of ARP requests & replies 
+
+## ARP Cache 
+
+There are static ARP and Dynamic ARP cache entries 
+
+1. Static ARP entries are manually configured and kept in the ARP cache table on a permanent basis (They don't age out) 
+- Static entries are best for devices that have to communicate with other devices in the same network on a regular basis 
+
+2. Dynamic ARP entries are added as a result of ARP requests & reply exchange with other devices, are kept for a period of time and then removed (expires) 
+
+![image](https://user-images.githubusercontent.com/79100627/198149732-998d27f3-cc03-4942-be33-747d6130d9cd.png)
+
+## Exchange of ARP Request and Reply 
+
+- Host A broadcast the ARP request message that who has the IP Address of x.x.x.x ?
+- All the machine receives the ARP requeset and one with the IP Address of x.x.x.x replies back with the MAC address 
+
+## ARP Packet Format 
+
+![image](https://user-images.githubusercontent.com/79100627/198150519-e4e4ea35-e270-4cc7-bda6-d2631e5b6d81.png)
+
+- Hardware Type : defines the type of data link network (Ethernet - type1) 
+- Protocol Type : 16 bit field defines the type of higher layer protocol 
+- Hardware Length : 8 bit field, defines the length of physical address in bytes (e.g. for Ethernet - value = 6) 
+- Protocol Length : 8 bit field, defines the length of logical address in bytes (e.g. for IPv4 - value = 4) 
+- Operation: 16 bit field defines the type of ARP (opcode == 1 ARP Request, opcode ==2 ARP reply) 
+- Sender Hardware Address: variable-length field defines the physical address of the sender in bytes 
+- Sender Protocol Address: variable-length field defines the logical address of the sedner in bytes 
+- Target Hardware Address: variable-length field defines the physical address of the target 
+  - for an ARP request, this field all 0s because the sender does not know physical address of the target 
+- Target Protocol Address: variable-length field defines the logical address of the target
+
+## Gratuitous ARP - an ARP Response that was not prompted by an ARP Request. Gratutious ARP is sent as a broadcast message and is a way for a node to announce or update its IP to MAC mapping to the entire network 
+
+How to recognize if an ARP packet is 'gratutious'?
+
+- OPCode == 2 (ARP Reply) 
+- Source IP = Destination IP 
+- Target MAC = ff:ff:ff:ff:ff:ff 
+
+This prevents ARP entries aging out and Prevent Gateway Spoofing 
+
+## ARP Vulnerabilities 
+
+1. ARP does not authenticate request or replies, ARP Requests & Replies can be forged 
+2. ARP is stateless - ARP Replies can be sent without a corresponding ARP Request 
+3. A node receving an ARP Packet (Request or Reply) must update its local ARP cache with the information in the source fields
+
+## ARP Attacks 
+
+1. ARP Flooding / DDoS - typically targeting gateways 
+  Any defence? 
+    - To avoid rate limit on ARP packets (Certain threhold in ARP packet) 
+    - Strict ARP -> the gateway learns only the ARP Reply packets in response to the ARP Request packets that it has sent. This action prevents ARP entries on the gateway from being exhausted when the gateway processes many ARP packets 
+    - ARP entry limit 
+ 
+ 
+2. ARP Spoofing / ARP poisoning 
+
+- 3 main flavours 
+  - Gateway Spoofing 
+  - User Spoofing 
+  - User-User Spoofing 
+
+Defense of Spoofing (ARP)
+- Gratutious ARP Packet Discarding 
+- Strict ARP Learning 
+- ARP Packet validity check 
+
+## The Internet Protocol = IP 
+
+Provides basic data transfer function in the form of data blocks (datagrams) from a source to a destination host across multiple/different nets 
+
+![image](https://user-images.githubusercontent.com/79100627/198156520-e4da27b4-70d5-45ee-ac47-b1a11bade5ad.png)
+
+
+![image](https://user-images.githubusercontent.com/79100627/198156533-6698ba47-3dc8-480b-a012-4409909169c9.png)
+
+
+
